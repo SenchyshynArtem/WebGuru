@@ -1,0 +1,20 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block style %}<link rel="stylesheet" href="{% static 'cat_css/style.css' %}">{% endblock %}
+{% block title %}Каталог{% endblock %}
+
+{% block content %}
+<div id="content">
+    <h1>Каталог</h1>
+    <br><br><br>
+    {% for product in all_products %}
+    <h2 class="product_name">{{ product.name }}</h2>
+    <img class="product_img" src="{{ product.image.url }}">
+    <p class="product_description">{{ product.description|truncatewords:30}}</p>
+    <b class="product_price">Від {{ product.price }} $</b>
+    <br>
+    <a class="url_page_product" href="{{ product.get_absolute_url }}">Детальніше</a>
+    <br><br><br><br><br><br><br>
+    {% endfor %}
+</div>
+{% endblock %}

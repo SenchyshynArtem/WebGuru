@@ -1,0 +1,40 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'prod_css/style.css' %}">{% endblock %}
+{% block title %}Перегляд продукту{% endblock %}
+
+{% block content %}
+<div id="content">
+    <h1>Перегляд продукту</h1>
+    <h2 class="product_name">{{ product.name }}</h2>
+    <img class="product_img" src="{{ product.image.url }}" style="max-width: 300px;">
+    <p class="product_description">{{ product.description }}</p>
+    <b class="product_price">{{ product.price }} $</b>
+    <br>
+    <h3>Додаткові параметри:</h3>
+    <form id="basket_form" method="post">
+        {% csrf_token %}
+        <input name="product_pk" value="{{ product.pk }}" hidden>
+        <input class="url" value="{% url 'product' product.pk %}" hidden>
+        {% for parameter in add_parameters %}
+        <div>
+            <input class="product-box check" type="checkbox" value="{{ parameter.pk }}" name="additional-parameter-pk"
+                id="" checked>
+
+            {{ parameter.name }} (<span class="parameterPrice">{{ parameter.price }}</span>$)
+        </div>
+        {% endfor %}
+
+        <h3 class="price_text">Загальна ціна: <span class="finalPrice">{{ full_price }}</span> $</h3>
+        <button class="add_in_basket">Додати до кошику</button>
+    </form>
+</div>
+<div class="modal-overlay-basket">
+    <div class="modal">
+        <div class="times_div">&times;</div>
+        <h2>Товар успішно додано в кошик!</h2>
+        <a href="{% url 'basket' %}" class="go-to-cart-btn">Перейти до кошика</a>
+    </div>
+</div>
+{% endblock %}

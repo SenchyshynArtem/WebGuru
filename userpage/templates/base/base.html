@@ -1,0 +1,136 @@
+<html lang="en">
+{% load static %}
+{% load basket_tags %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
+  <script src="{% static 'base/js/base.js' %}" defer></script>
+  <script src="{% static 'js/script.js' %}" defer></script>
+  <script src="{% static 'js/jQuery.js' %}"></script>
+  {% block js %} {% endblock %}
+  {% block style %} {% endblock %}
+  <title>{% block title %} {% endblock %}</title>
+</head>
+
+<body>
+  <header>
+    <div class="content-top">
+      <a href="{% url 'main' %}" class="left-content">
+        <img src="{% static 'images/logo.png' %}" alt="Icon">
+        <h1>WebGuru</h1>
+      </a>
+      <ul class="navigation">
+        <li><a href="{% url 'main' %}">Головна</a></li>
+        <li><a href="{% url 'catalogue' %}">Каталог</a></li>
+        <li><a href="{% url 'about_us' %}">Про нас</a></li>
+        <li class="open-feedback">Зворотній зв'язок</li>
+        <!-- url 'feedback' -->
+      </ul>
+      <div class="tag"><a href="{% url 'basket' %}" class="button"><img src="{% static 'images/cart.png' %}"
+            alt="Basket"></a>
+        <span>{% get_prods_in_basket_amount request %}</span>
+      </div>
+    </div>
+    <div class="content-bottom">
+      <ul class="navigation-small">
+        <li><a href="{% url 'main' %}">Головна</a></li>
+        <li><a href="{% url 'catalogue' %}">Каталог</a></li>
+        <li><a href="{% url 'about_us' %}">Про нас</a></li>
+        <li class="open-feedback">Зворотній зв'язок</li>
+      </ul>
+    </div>
+  </header>
+  <main>{% block content %} {% endblock %}
+    <div class="feedback-modal-overlay">
+      <div class="feedback-modal">
+        <div class="times-sign">&times;</div>
+        <h2>Зворотній зв'язок</h2>
+        <!-- <a href="{% url 'catalogue' %}" class="go-to-catalogue-btn">Перейти до каталогу</a> -->
+        <form id="feedback-form" action="{% url 'feedback_success' %}" method="post">
+          {% csrf_token %}
+          <div class="input-lines">
+            <p><input class="feedback-name" type="text" placeholder="Ваше ім'я" name="name" required></p>
+            <p><input class="feedback-email" type="email" placeholder="Електрона Пошта" name="email" required></p>
+            <p><textarea class="feedback-message" name="feedback-message" placeholder="Враження від наших послуг"
+                required></textarea></p>
+          </div>
+          <button class="feedback-post">Надіслати</button>
+        </form>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <img src="{% static 'images/logo.png' %}" alt="icon">
+        <h3>Наші соцмережі</h3>
+        <ul class="social-media-links">
+          <li><a href="https://www.facebook.com" target="_blank">Facebook</a></li>
+          <li><a href="https://www.twitter.com" target="_blank">Twitter</a></li>
+          <li><a href="https://www.instagram.com" target="_blank">Instagram</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Наші контакти</h3>
+        <p>Пошта: info@example.com</p>
+        <p>Телефон: +380-12-345-67-89</p>
+        <p>Адреса: 123 Main St, City, Country</p>
+      </div>
+      <div class="footer-section">
+        <h3>Зворотній зв'язок</h3>
+        <p>Будемо раді почути ваші хвилювання!</p>
+        <h3 class="feedback-button button">Залишити відгук</h3>
+      </div>
+      <div class="footer-section">
+        <h3>Про нас</h3>
+        <p>Хочете знати більше?</p>
+        <h3><a href="{% url 'about_us' %}" class="button">Дізнатися про нас</a></h3>
+      </div>
+    </div>
+
+    <div class="footer-container-phone">
+      <div class="footer-section">
+        <img src="{% static 'images/logo.png' %}" alt="icon">
+        <h3>Наші соцмережі</h3>
+        <ul class="social-media-links">
+          <li><a href="https://www.facebook.com" target="_blank">Facebook</a></li>
+          <li><a href="https://www.twitter.com" target="_blank">Twitter</a></li>
+          <li><a href="https://www.instagram.com" target="_blank">Instagram</a></li>
+        </ul>
+      </div>
+      <hr>
+      <div class="footer-section">
+        <h3>Наші контакти</h3>
+        <p>Пошта: info@example.com</p>
+        <p>Телефон: +380-12-345-67-89</p>
+        <p>Адреса: 123 Main St, City, Country</p>
+      </div>
+      <hr>
+      <div class="footer-box">
+        <div class="footer-section">
+          <h3>Зворотній зв'язок</h3>
+          <p>Будемо раді почути ваші хвилювання!</p>
+          <p class="feedback-button button">Зворотній зв'язок</p>
+        </div>
+        <div class="footer-section">
+          <h3>Про нас</h3>
+          <p>Хочете знати більше?</p>
+          <a href="{% url 'about_us' %}" class="button">Дізнатись про нас</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Успішно</h2>
+      <p>Ваше повідомлення надіслано успішно!</p>
+    </div>
+  </div>
+</body>
+
+</html>

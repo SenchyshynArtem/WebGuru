@@ -1,0 +1,89 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'basket_css/style.css' %}">{% endblock %}
+{% block js %}
+<script src="{% static 'basket_js/basket.js' %}" defer></script> {% endblock %}
+{% block title %}Кошик{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<input type="hidden" value="{% url 'delete_from_basket' %}" id="url_delete_from_basket">
+<input type="hidden" value="{% url 'basket' %}" id="show_basket">
+<div id="content">
+    <h1>Кошик</h1>
+    <br>
+    {% if products_in_basket %}
+    <!-- Цикл для перебору товарів у кошику -->
+    {% for product_in_basket in products_in_basket %}
+
+    <div id="product_in_basket_{{ product_in_basket.pk }}" class="del_products">
+        <!-- Виведення назви товару -->
+        <h2 class="product_name">{{ product_in_basket.product.name }}</h2>
+        <!-- Виведення зображення товару -->
+        <img class="product_img" src="{{ product_in_basket.product.image.url }}">
+        <!-- Виведення ціни товару -->
+        <b class="product_price">{{ product_in_basket.product.price }} $</b>
+        <!-- Цикл для перебору додаткових параметрів товару -->
+        {% for parameter in additional_parameters %}
+        <!-- Перевірка, чи параметр присутній у товарі -->
+        {% if parameter in product_in_basket.additional_parameters.all %}
+        <div>
+            <input class="productPk" type="hidden" value="{{ product_in_basket.pk }}">
+            <!-- Чекбокс параметру -->
+            <input class="product-box check" type="checkbox" value="{{ parameter.pk }}" name="additional-parameter-pk"
+                id="" checked>
+            <!-- Назва параметру -->
+            {{ parameter.name }} (<span class="parameterPrice checkedPrice">{{ parameter.price }}</span>$)
+        </div>
+        {% else %}
+        <div>
+            <input class="productPk" type="hidden" value="{{ product_in_basket.pk }}">
+            <!-- Чекбокс параметру -->
+            <input class="product-box check" type="checkbox" value="{{ parameter.pk }}" name="additional-parameter-pk"
+                id="">
+            <!-- Назва параметру -->
+            {{ parameter.name }} <span>(<span class="parameterPrice">{{ parameter.price }}</span>$)</span>
+        </div>
+        {% endif %}
+
+        {% endfor %}
+        <button class="delete_from_basket" value="{{ product_in_basket.pk }}">Видалити з кошику</button>
+        <br><br><br><br><br><br><br>
+    </div>
+
+    {% endfor %}
+    <h3 class="price-text">Загальня ціна: <span class="final-price">{{full_price}}</span>$</h3>
+
+    <button class="show_form">Замовити</button>
+    <div class="form">
+        <div class="times">
+            <p>&times;</p>
+        </div>
+
+        <h1>Оформити покупку</h1>
+        <form id="comment-form" method="post" action="{% url 'order_processing' %}">
+            {% csrf_token %}
+            <p><input type="text" placeholder="Ваше ім'я" name="name" required></p>
+            <p><input type="email" placeholder="Ваш email" name="email" required></p>
+            <p><textarea placeholder="Побажання стосовно дизайну" name="design" required></textarea></p>
+            <p><textarea placeholder="Побажання стосовно функціоналу" name="functional" required></textarea></p>
+            <p><textarea placeholder="Додатковий коментар" name="comment" required></textarea></p>
+            <button class="button-post">Надіслати</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="empty_div">
+        <img src="{% static 'img/empty_basket.png' %}">
+        <p>Порожньо</p>
+    </div>
+    {% endif %}
+</div>
+<div class="modal-overlay">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Успішна покупка</h2>
+        <p>Ваша покупка пройшла успішно!</p>
+    </div>
+</div>
+{% endblock %}
